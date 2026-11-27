@@ -1,0 +1,80 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-display: "Plus Jakarta Sans", "Roboto Flex", system-ui, sans-serif;
+    --font-sans: "Roboto Flex", "Plus Jakarta Sans", system-ui, sans-serif;
+
+    /* Default fallback tokens (Tonal Indigo - Light) */
+    --md-surface: #fbf8ff;
+    --md-surface-container-lowest: #ffffff;
+    --md-surface-container-low: #f4f1fa;
+    --md-surface-container: #eeebf5;
+    --md-surface-container-high: #e8e5f0;
+    --md-surface-container-highest: #e2dfea;
+    --md-on-surface: #1a1b23;
+    --md-on-surface-variant: #464655;
+    --md-primary: #4355b9;
+    --md-on-primary: #ffffff;
+    --md-primary-container: #dee0ff;
+    --md-on-primary-container: #00105c;
+    --md-secondary: #5a5d72;
+    --md-on-secondary: #ffffff;
+    --md-secondary-container: #dfe1f9;
+    --md-on-secondary-container: #171b2c;
+    --md-tertiary: #76546e;
+    --md-on-tertiary: #ffffff;
+    --md-tertiary-container: #ffd7f3;
+    --md-on-tertiary-container: #2c1228;
+    --md-outline: #767686;
+    --md-outline-variant: #c7c5d6;
+    --md-inverse-surface: #2f3038;
+    --md-inverse-on-surface: #f2effa;
+  }
+
+  html,
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--md-surface);
+    color: var(--md-on-surface);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  button,
+  [role="button"],
+  [role="slider"],
+  input[type="range"] {
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--md-primary);
+    outline-offset: 2px;
+  }
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.m3-spring {
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.m3-standard {
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

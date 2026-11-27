@@ -1,0 +1,8 @@
+{
+  "name": "Material 3 Expressive",
+  "description": "An interactive single-viewport Bento Box showcase of Google Material Design 3 Expressive components, dynamic color themes, shape morphing, and spring physics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
