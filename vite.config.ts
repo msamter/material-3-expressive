@@ -39,6 +39,29 @@ export default defineConfig(() => {
       cssMinify: true,
       sourcemap: false,
       assetsInlineLimit: 4096,
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                name: 'react-vendor',
+                test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+                priority: 30,
+              },
+              {
+                name: 'motion-vendor',
+                test: /node_modules[\\/](motion|framer-motion|motion-dom|motion-utils)[\\/]/,
+                priority: 20,
+              },
+              {
+                name: 'icons-vendor',
+                test: /node_modules[\\/]lucide-react[\\/]/,
+                priority: 10,
+              },
+            ],
+          },
+        },
+      },
     },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.

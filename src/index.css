@@ -46,6 +46,10 @@
   button,
   [role="button"],
   [role="slider"],
+  [role="switch"],
+  [role="radio"],
+  [role="checkbox"],
+  [role="tab"],
   input[type="range"] {
     touch-action: manipulation;
   }
@@ -66,6 +70,20 @@
 
 .m3-standard {
   transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes m3-shimmer-slide {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.m3-skeleton-shimmer {
+  animation: m3-shimmer-slide 1.55s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {

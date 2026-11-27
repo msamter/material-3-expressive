@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 
 export interface BentoCardRenderProps {
@@ -23,7 +23,10 @@ interface BentoCardProps {
   children: (props: BentoCardRenderProps) => React.ReactNode;
 }
 
-export const BentoCard: React.FC<BentoCardProps> = ({
+const INTERACTIVE_SELECTOR =
+  'button, input, textarea, select, a, [role="slider"], [role="button"], [role="switch"], [role="radio"], [role="checkbox"], [role="tab"], [role="menuitemradio"]';
+
+const BentoCardComponent: React.FC<BentoCardProps> = ({
   indexLabel,
   title,
   readout,
@@ -41,9 +44,19 @@ export const BentoCard: React.FC<BentoCardProps> = ({
     }
   }, []);
 
-  const handlePointerLeave = useCallback(() => {
-    setIsHovered(false);
-    setManualActive(false);
+  const handlePointerLeave = useCallback((e: React.PointerEvent<HTMLElement>) => {
+    if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+      setIsHovered(false);
+      setManualActive(false);
+    }
+  }, []);
+
+  // Immediately stop autonomous hover demo on pointerdown for any interactive control,
+  // preventing demo interval ticks from racing with clicks (including on Safari where buttons don't focus on click).
+  const handlePointerDownCapture = useCallback((e: React.PointerEvent<HTMLElement>) => {
+    if (e.target instanceof Element && e.target.closest(INTERACTIVE_SELECTOR)) {
+      setManualActive(true);
+    }
   }, []);
 
   const claimManualControl = useCallback(() => {
@@ -52,6 +65,11 @@ export const BentoCard: React.FC<BentoCardProps> = ({
 
   const isDemoActive = isHovered && !manualActive && !reducedMotion;
 
+  const cardSurfaceVar =
+    surfaceVariant === 'low'
+      ? 'var(--md-surface-container-low)'
+      : 'var(--md-surface-container)';
+
   const surfaceBg =
     surfaceVariant === 'low'
       ? 'bg-[var(--md-surface-container-low)]'
@@ -59,17 +77,23 @@ export const BentoCard: React.FC<BentoCardProps> = ({
 
   return (
     <section
+      onPointerDownCapture={handlePointerDownCapture}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       aria-label={`${indexLabel} ${title}`}
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-[var(--md-outline-variant)]/75 ${surfaceBg} p-4 sm:p-5 transition-colors duration-300 m3-standard min-h-[244px] lg:min-h-0 ${
-        isHovered ? 'border-[var(--md-outline)]/90' : ''
+      style={{ '--bento-card-bg': cardSurfaceVar } as React.CSSProperties}
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-[28px] border ${surfaceBg} p-4 sm:p-5 transition-[border-color,background-color] duration-300 m3-spring min-h-[244px] lg:min-h-0 ${
+        isHovered
+          ? 'border-[var(--md-outline)]/90'
+          : 'border-[var(--md-outline-variant)]/75'
       } ${className}`}
     >
       {/* Top-left compact unboxed component header */}
-      <div className="flex items-baseline justify-between gap-2.5 shrink-0 select-none z-10 min-w-0">
+      <div className="flex items-center justify-between gap-2.5 shrink-0 select-none z-10 min-w-0">
         <h2 className="font-display text-[13px] font-semibold tracking-[-0.01em] text-[var(--md-on-surface-variant)] whitespace-nowrap truncate min-w-0">
-          <span className="tabular-nums text-[var(--md-primary)] font-bold">{indexLabel}</span>
+          <span className="tabular-nums text-[var(--md-primary)] font-bold">
+            {indexLabel}
+          </span>
           <span className="mx-1.5 opacity-55" aria-hidden="true">
             ·
           </span>
@@ -96,3 +120,5 @@ export const BentoCard: React.FC<BentoCardProps> = ({
     </section>
   );
 };
+
+export const BentoCard = memo(BentoCardComponent);

@@ -346,10 +346,10 @@ export const ExpressiveLoadingCard: React.FC<ExpressiveLoadingCardProps> = ({ cl
 
   return (
     <BentoCard
-      indexLabel="06"
+      indexLabel="09"
       title="Expressive Loading & Progress"
       readout={progressText}
-      surfaceVariant="default"
+      surfaceVariant="low"
       className={className}
     >
       {({ isDemoActive, claimManualControl, reducedMotion }) => (

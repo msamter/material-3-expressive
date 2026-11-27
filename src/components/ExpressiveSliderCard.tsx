@@ -38,6 +38,7 @@ const ExpressiveSliderStage: React.FC<ExpressiveSliderStageProps> = ({
 }) => {
   const [value, setValue] = useState(58);
   const [isDragging, setIsDragging] = useState(false);
+  const draggingRef = useRef(false);
   const [wavePhase, setWavePhase] = useState(0);
   const [trackWidth, setTrackWidth] = useState(260);
 
@@ -135,18 +136,20 @@ const ExpressiveSliderStage: React.FC<ExpressiveSliderStageProps> = ({
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     claimManualControl();
+    draggingRef.current = true;
     setIsDragging(true);
     e.currentTarget.setPointerCapture(e.pointerId);
     updateValueFromClientX(e.clientX);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
+    if (!draggingRef.current) return;
     updateValueFromClientX(e.clientX);
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
     setIsDragging(false);
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId);

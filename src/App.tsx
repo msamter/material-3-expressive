@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import {
   M3_THEMES,
@@ -13,9 +13,35 @@ import { ExpressiveSliderCard } from './components/ExpressiveSliderCard';
 import { ConnectedButtonGroupCard } from './components/ConnectedButtonGroupCard';
 import { FloatingToolbarCard } from './components/FloatingToolbarCard';
 import { ExpressiveLoadingCard } from './components/ExpressiveLoadingCard';
+import { ExpressiveTextCard } from './components/ExpressiveTextCard';
+import { ExpressiveChipsCard } from './components/ExpressiveChipsCard';
+import { ExpressiveSkeletonCard } from './components/ExpressiveSkeletonCard';
+import { ExpressiveSwitchCard } from './components/ExpressiveSwitchCard';
+import { ExpressiveFabMenuCard } from './components/ExpressiveFabMenuCard';
+import { ExpressiveCarouselCard } from './components/ExpressiveCarouselCard';
+import { ExpressiveSearchBarCard } from './components/ExpressiveSearchBarCard';
+import { ExpressiveNavBarCard } from './components/ExpressiveNavBarCard';
+import { ExpressiveMediaCard } from './components/ExpressiveMediaCard';
+import { ExpressivePullRefreshCard } from './components/ExpressivePullRefreshCard';
+import { ExpressiveBottomSheetCard } from './components/ExpressiveBottomSheetCard';
+import { ExpressiveNotificationCard } from './components/ExpressiveNotificationCard';
+import { ExpressiveTimePickerCard } from './components/ExpressiveTimePickerCard';
+import { ExpressiveSnackbarCard } from './components/ExpressiveSnackbarCard';
+import { ExpressiveQuickTilesCard } from './components/ExpressiveQuickTilesCard';
+import { ExpressiveStepperCard } from './components/ExpressiveStepperCard';
+import { ExpressiveAccordionCard } from './components/ExpressiveAccordionCard';
+import { ExpressiveRatingCard } from './components/ExpressiveRatingCard';
+import { ExpressiveVolumeCard } from './components/ExpressiveVolumeCard';
+import { ExpressiveChecklistCard } from './components/ExpressiveChecklistCard';
+import { ExpressiveTabsCard } from './components/ExpressiveTabsCard';
+import { ExpressiveAvatarStackCard } from './components/ExpressiveAvatarStackCard';
+import { ExpressiveBadgeCard } from './components/ExpressiveBadgeCard';
+import { ExpressiveDialCard } from './components/ExpressiveDialCard';
 
 const STORAGE_THEME_KEY = 'm3-expressive-theme';
 const STORAGE_MODE_KEY = 'm3-expressive-mode';
+
+type ShowcasePage = 1 | 2;
 
 function readStoredTheme(): M3ThemeId {
   try {
@@ -41,9 +67,81 @@ function readStoredMode(): M3ColorMode {
   return 'light';
 }
 
+/**
+ * Memoized paginated Bento showcase grid (15 boxes on Page 1, 15 boxes on Page 2)
+ * so switching dynamic color themes or light/dark mode updates purely through CSS
+ * custom properties without re-rendering any Bento tiles.
+ */
+const BentoShowcaseGrid = memo(function BentoShowcaseGrid({ page }: { page: ShowcasePage }) {
+  if (page === 1) {
+    return (
+      <main className="flex flex-col gap-3 sm:gap-4 flex-1">
+        {/* Page 1 · Group A (01–06): Above-the-fold Asymmetric Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-12 lg:h-[calc(100dvh-92px)] lg:min-h-[600px] gap-3 sm:gap-4">
+          <ExpressiveButtonCard className="lg:col-start-1 lg:col-span-4 lg:row-start-1 lg:row-span-6" />
+          <SplitButtonCard className="lg:col-start-5 lg:col-span-4 lg:row-start-1 lg:row-span-7" />
+          <ExpressiveSliderCard className="lg:col-start-9 lg:col-span-4 lg:row-start-1 lg:row-span-5" />
+          <ConnectedButtonGroupCard className="lg:col-start-1 lg:col-span-4 lg:row-start-7 lg:row-span-6" />
+          <FloatingToolbarCard className="lg:col-start-5 lg:col-span-4 lg:row-start-8 lg:row-span-5" />
+          <ExpressiveSkeletonCard className="lg:col-start-9 lg:col-span-4 lg:row-start-6 lg:row-span-7" />
+        </div>
+
+        {/* Page 1 · Group B (07–12): Extended Expressive Patterns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-12 lg:h-[700px] xl:h-[730px] gap-3 sm:gap-4">
+          <ExpressiveTextCard className="lg:col-start-1 lg:col-span-4 lg:row-start-1 lg:row-span-6" />
+          <ExpressiveChipsCard className="lg:col-start-5 lg:col-span-4 lg:row-start-1 lg:row-span-5" />
+          <ExpressiveLoadingCard className="lg:col-start-9 lg:col-span-4 lg:row-start-1 lg:row-span-7" />
+          <ExpressiveSwitchCard className="lg:col-start-1 lg:col-span-4 lg:row-start-7 lg:row-span-6" />
+          <ExpressiveFabMenuCard className="lg:col-start-5 lg:col-span-4 lg:row-start-6 lg:row-span-7" />
+          <ExpressiveCarouselCard className="lg:col-start-9 lg:col-span-4 lg:row-start-8 lg:row-span-5" />
+        </div>
+
+        {/* Page 1 · Group C (13–15): Search, Navigation & Media Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 lg:h-[340px] xl:h-[360px] gap-3 sm:gap-4">
+          <ExpressiveSearchBarCard className="lg:col-span-4" />
+          <ExpressiveNavBarCard className="lg:col-span-4" />
+          <ExpressiveMediaCard className="md:col-span-2 lg:col-span-4" />
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="flex flex-col gap-3 sm:gap-4 flex-1">
+      {/* Page 2 · Group A (16–21): Surfaces, Pickers & Quick Controls */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-12 lg:h-[calc(100dvh-92px)] lg:min-h-[600px] gap-3 sm:gap-4">
+        <ExpressivePullRefreshCard className="lg:col-start-1 lg:col-span-4 lg:row-start-1 lg:row-span-6" />
+        <ExpressiveBottomSheetCard className="lg:col-start-5 lg:col-span-4 lg:row-start-1 lg:row-span-7" />
+        <ExpressiveNotificationCard className="lg:col-start-9 lg:col-span-4 lg:row-start-1 lg:row-span-5" />
+        <ExpressiveTimePickerCard className="lg:col-start-1 lg:col-span-4 lg:row-start-7 lg:row-span-6" />
+        <ExpressiveSnackbarCard className="lg:col-start-5 lg:col-span-4 lg:row-start-8 lg:row-span-5" />
+        <ExpressiveQuickTilesCard className="lg:col-start-9 lg:col-span-4 lg:row-start-6 lg:row-span-7" />
+      </div>
+
+      {/* Page 2 · Group B (22–27): Steppers, Accordion, Rating, Volume, Checklist & Tabs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-12 lg:h-[710px] xl:h-[740px] gap-3 sm:gap-4">
+        <ExpressiveStepperCard className="lg:col-start-1 lg:col-span-4 lg:row-start-1 lg:row-span-5" />
+        <ExpressiveAccordionCard className="lg:col-start-5 lg:col-span-4 lg:row-start-1 lg:row-span-7" />
+        <ExpressiveRatingCard className="lg:col-start-9 lg:col-span-4 lg:row-start-1 lg:row-span-5" />
+        <ExpressiveVolumeCard className="lg:col-start-1 lg:col-span-4 lg:row-start-6 lg:row-span-7" />
+        <ExpressiveChecklistCard className="lg:col-start-5 lg:col-span-4 lg:row-start-8 lg:row-span-5" />
+        <ExpressiveTabsCard className="lg:col-start-9 lg:col-span-4 lg:row-start-6 lg:row-span-7" />
+      </div>
+
+      {/* Page 2 · Group C (28–30): Presence, Badges & Rotary Controls */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 lg:h-[340px] xl:h-[360px] gap-3 sm:gap-4">
+        <ExpressiveAvatarStackCard className="lg:col-span-4" />
+        <ExpressiveBadgeCard className="lg:col-span-4" />
+        <ExpressiveDialCard className="md:col-span-2 lg:col-span-4" />
+      </div>
+    </main>
+  );
+});
+
 export default function App() {
   const [themeId, setThemeId] = useState<M3ThemeId>(readStoredTheme);
   const [colorMode, setColorMode] = useState<M3ColorMode>(readStoredMode);
+  const [activePage, setActivePage] = useState<ShowcasePage>(1);
 
   const activeTokens = useMemo(() => {
     const theme = M3_THEMES[themeId];
@@ -75,10 +173,15 @@ export default function App() {
     }
   }, [themeId, colorMode, cssVars, activeTokens.surface]);
 
+  const handlePageChange = useCallback((nextPage: ShowcasePage) => {
+    setActivePage(nextPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   return (
     <div
       style={cssVars as React.CSSProperties}
-      className="min-h-[100dvh] lg:h-[100dvh] lg:overflow-hidden overflow-x-clip bg-[var(--md-surface)] text-[var(--md-on-surface)] transition-colors duration-300 m3-standard flex flex-col p-4 sm:p-5 gap-3 sm:gap-4"
+      className="min-h-[100dvh] overflow-x-clip bg-[var(--md-surface)] text-[var(--md-on-surface)] transition-colors duration-300 m3-standard flex flex-col p-4 sm:p-5 gap-3 sm:gap-4"
     >
       {/* Minimal Header Strip with Dynamic Color Theme Switcher */}
       <header className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shrink-0">
@@ -142,20 +245,34 @@ export default function App() {
         </div>
       </header>
 
-      {/* Single-Viewport Desktop Bento Box Grid -> Responsive Tablet (2-col) & Mobile (1-col) */}
-      <main className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-12 gap-3 sm:gap-4">
-        <ExpressiveButtonCard className="lg:col-start-1 lg:col-span-4 lg:row-start-1 lg:row-span-6" />
+      <BentoShowcaseGrid page={activePage} />
 
-        <SplitButtonCard className="lg:col-start-5 lg:col-span-4 lg:row-start-1 lg:row-span-7" />
-
-        <ExpressiveSliderCard className="lg:col-start-9 lg:col-span-4 lg:row-start-1 lg:row-span-5" />
-
-        <ConnectedButtonGroupCard className="lg:col-start-1 lg:col-span-4 lg:row-start-7 lg:row-span-6" />
-
-        <FloatingToolbarCard className="lg:col-start-5 lg:col-span-4 lg:row-start-8 lg:row-span-5" />
-
-        <ExpressiveLoadingCard className="lg:col-start-9 lg:col-span-4 lg:row-start-6 lg:row-span-7" />
-      </main>
+      {/* Bottom M3 Expressive Page Switcher (Page 1: 01–15, Page 2: 16–30) */}
+      <nav
+        aria-label="Showcase pagination"
+        className="flex items-center justify-center pt-2 pb-1 shrink-0"
+      >
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--md-surface-container)] p-1.5 border border-[var(--md-outline-variant)]/75 shadow-xs">
+          {([1, 2] as const).map((pageNum) => {
+            const isCurrent = activePage === pageNum;
+            return (
+              <button
+                key={pageNum}
+                type="button"
+                aria-current={isCurrent ? 'page' : undefined}
+                onClick={() => handlePageChange(pageNum)}
+                className={`inline-flex items-center justify-center min-h-[44px] min-w-[104px] px-5 font-display text-[13.5px] font-semibold cursor-pointer select-none whitespace-nowrap transition-all duration-200 m3-spring active:scale-95 ${
+                  isCurrent
+                    ? 'rounded-full bg-[var(--md-primary)] text-[var(--md-on-primary)] shadow-xs'
+                    : 'rounded-[16px] bg-transparent text-[var(--md-on-surface-variant)] hover:bg-[var(--md-surface-container-high)] hover:text-[var(--md-on-surface)]'
+                }`}
+              >
+                Page {pageNum}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }
